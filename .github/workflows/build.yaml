@@ -1,8 +1,8 @@
 name: "Build"
 on:
   push:
-    paths-ignore:
-      - "manifest/**"
+    branches:
+      - main
 
 jobs:
   Build:
@@ -35,6 +35,7 @@ jobs:
         id: update-image-tag
         continue-on-error: true
         run: |
+          git checkout manifest
           yq eval '.spec.template.spec.containers[0].image = "ghcr.io/2023-4400-exp/4402-go-server-ci:"+env(GITHUB_SHA)' -i ./manifest/deployment.yaml
           git diff --name-only --exit-code
 
@@ -44,6 +45,7 @@ jobs:
         run: |
           git config user.name github-actions[bot]
           git config user.email github-actions[bot]@users.noreply.github.com
+          git checkout manifest
           git add .
           git commit --author=. -m "Update image tag to $GITHUB_SHA"
-          git push
+          git push -b 
