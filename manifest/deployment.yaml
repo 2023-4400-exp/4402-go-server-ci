@@ -15,6 +15,5 @@ spec:
         app: go-server-ci
     spec:
       containers:
-      - image: ghcr.io/2023-4400-exp/4402-go-server-ci:d5b9aa002f51830d997f180c4d132c58acc62659@sha256:9cb2fd34b7055204604ae65df12ba1f63e1b52521ebd44a39d5c066978510c20
-        name: go-server-ci
-
+        - image: ghcr.io/2023-4400-exp/4402-go-server-ci:45b8af285b740cf589527010736c02c9a772aa32
+          name: go-server-ci
