@@ -50,4 +50,4 @@ jobs:
           git config user.name github-actions[bot]
           git add .
           git commit --author=. -m "Update image tag to $GITHUB_SHA"
-          git push -b 
+          git push 
