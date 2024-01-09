@@ -29,13 +29,16 @@ jobs:
       - name: Build Docker image
         run: |
           docker buildx build --platform linux/amd64,linux/arm/v7 . -t ghcr.io/2023-4400-exp/4402-go-server-ci:${{ github.sha }} --push
-
+      
+      - name: Checkout to manifest
+        uses: actions/checkout@v2
+        with:
+          ref: manifest
 
       - name: Update manifest image tag
         id: update-image-tag
         continue-on-error: true
         run: |
-          git checkout manifest
           yq eval '.spec.template.spec.containers[0].image = "ghcr.io/2023-4400-exp/4402-go-server-ci:"+env(GITHUB_SHA)' -i ./manifest/deployment.yaml
           git diff --name-only --exit-code
 
@@ -43,9 +46,8 @@ jobs:
       - name: Commit/Push manifest
         if: steps.update-image-tag.outcome == 'failure'
         run: |
-          git config user.name github-actions[bot]
           git config user.email github-actions[bot]@users.noreply.github.com
-          git checkout manifest
+          git config user.name github-actions[bot]
           git add .
           git commit --author=. -m "Update image tag to $GITHUB_SHA"
           git push -b 
